@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.32804.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paint2API", "Paint2API\Paint2API.csproj", "{34494980-AAAE-4213-AF5C-EF1A936BEC16}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{34494980-AAAE-4213-AF5C-EF1A936BEC16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34494980-AAAE-4213-AF5C-EF1A936BEC16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34494980-AAAE-4213-AF5C-EF1A936BEC16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34494980-AAAE-4213-AF5C-EF1A936BEC16}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {960AF229-1DE2-4C4A-B4D5-62BDA2885A1D}
+	EndGlobalSection
+EndGlobal
