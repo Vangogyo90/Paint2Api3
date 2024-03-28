@@ -1,0 +1,29 @@
+name: Syntax Check # Устанавливаем имя рабочего процесса (workflow) как "Syntax Check"
+
+on:
+  push: # Событие, при котором должен запускаться рабочий процесс
+    branches:
+      - main # Рабочий процесс будет запускаться только при пуше в ветку main
+
+jobs:
+  syntax-check: # Название задания (job) "syntax-check"
+    runs-on: ubuntu-latest # Указываем операционную систему, на которой будет выполняться задание
+
+    steps: # Шаги, которые нужно выполнить в рамках задания
+
+    - name: Checkout repository # Шаг "Checkout repository" - клонирование репозитория
+      uses: actions/checkout@v2 # Используем действие для клонирования репозитория
+
+    - name: Setup .NET Core # Шаг "Setup .NET Core" - установка .NET Core
+      uses: actions/setup-dotnet@v1 # Используем действие для установки .NET Core
+      with:
+        dotnet-version: '6.0.x' # Устанавливаем версию .NET Core
+
+    - name: Restore dependencies # Шаг "Restore dependencies" - восстановление зависимостей
+      run: dotnet restore # Выполняем команду dotnet restore для восстановления зависимостей
+
+    - name: Install NuGet package # Шаг "Install NuGet package" - установка пакета NuGet
+      run: dotnet add Paint2API/Paint2API.csproj package Microsoft.CodeAnalysis.NetAnalyzers --version 8.0.0 # Устанавливаем пакет NuGet Microsoft.CodeAnalysis.NetAnalyzers версии 8.0.0
+
+    - name: Run Roslyn Analyzers # Шаг "Run Roslyn Analyzers" - запуск анализаторов Roslyn
+      run: dotnet build Paint2API/Paint2API.csproj /p:WarningLevel=6 /p:DebugType=None /p:DebugSymbols=false /p:Platform="Any CPU" /p:TreatWarningsAsErrors=true # Выполняем сборку проекта с указанными параметрами
