@@ -1,39 +1,33 @@
-name: lint
-on:
+name: syntax-check
+
+on:  
   push:
-    branches:
-      - '*'
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-env:
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-  DOTNET_NOLOGO: true
+jobs:  
+  build:    
+    runs-on: windows-latest
+    
+    steps:      
+      - uses: actions/checkout@v2
+      
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
 
-defaults:
-  run:
-    shell: pwsh
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.5
+        
+      - name: Setup VSTest
+        uses: darenm/Setup-VSTest@v1
 
-jobs:
-  lint_csharp:
-    runs-on: windows-2019
-    steps:
-    - uses: actions/checkout@v2
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: '5.0.x' # SDK Version to use; x will use the latest version of the 5.0 channel
+      - name: Restore Packages
+        run: nuget restore Paint2API.sln
 
-    # Format the output of dotnet format
-    - name: Add dotnet-format problem matcher
-      uses: xt0rted/dotnet-format-problem-matcher@v1
-
-    # Install dotnet format as a global tool
-    - name: Install dotnet format
-      run: dotnet tool update --global dotnet-format
-
-    # Run dotnet format --dry-run --check
-    # By default, the task ensure the exit code is 0
-    # If a file needs to be edited by dotnet format, the exit code will be a non-zero value
-    # So the task will fail
-    - name: Run dotnet format
-      run: dotnet format --check --verbosity diagnostic
+      - name: Build Solution
+        run: |
+          msbuild.exe Paint2API.sln /p:platform="Any CPU" /p:configuration="Release"
