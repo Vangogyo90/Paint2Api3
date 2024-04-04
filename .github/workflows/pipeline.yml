@@ -26,4 +26,4 @@ jobs:
       run: dotnet add Paint2API/Paint2API.csproj package Microsoft.CodeAnalysis.NetAnalyzers --version 8.0.0 # Устанавливаем пакет NuGet Microsoft.CodeAnalysis.NetAnalyzers версии 8.0.0
 
     - name: Run Roslyn Analyzers # Шаг "Run Roslyn Analyzers" - запуск анализаторов Roslyn
-      run: dotnet build Paint2API/Paint2API.csproj /p:WarningLevel=6 /p:DebugType=None /p:DebugSymbols=false /p:Platform="Any CPU" /p:TreatWarningsAsErrors=true # Выполняем сборку проекта с указанными параметрами
+      run: dotnet build Paint2API/Paint2API.csproj /p:WarningLevel=6 /p:DebugType=None /p:DebugSymbols=false /p:Platform="Any CPU" /p:TreatWarningsAsErrors=true /p:RunAnalyzers=true # Выполняем сборку проекта с указанными параметрами
