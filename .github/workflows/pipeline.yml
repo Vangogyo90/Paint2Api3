@@ -1,30 +1,39 @@
-name: Syntax Check # Устанавливаем имя рабочего процесса (workflow) как "Syntax Check"
-
+name: lint
 on:
-  push: # Событие, при котором должен запускаться рабочий процесс
+  push:
     branches:
-      - main # Рабочий процесс будет запускаться только при пуше в ветку main
+      - '*'
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+
+defaults:
+  run:
+    shell: pwsh
 
 jobs:
-  syntax-check: # Название задания (job) "syntax-check"
-    runs-on: windows-latest # Указываем операционную систему, на которой будет выполняться задание
+  lint_csharp:
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v2
 
-    steps: # Шаги, которые нужно выполнить в рамках задания
-
-    - name: Checkout repository # Шаг "Checkout repository" - клонирование репозитория
-      uses: actions/checkout@v2 # Используем действие для клонирования репозитория
-
-    - name: Setup .NET Core # Шаг "Setup .NET Core" - установка .NET Core
-      uses: actions/setup-dotnet@v1 # Используем действие для установки .NET Core
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '6.0.x' # Устанавливаем версию .NET Core
+        dotnet-version: '5.0.x' # SDK Version to use; x will use the latest version of the 5.0 channel
 
-    - name: Restore dependencies # Шаг "Restore dependencies" - восстановление зависимостей
-      run: dotnet restore # Выполняем команду dotnet restore для восстановления зависимостей
+    # Format the output of dotnet format
+    - name: Add dotnet-format problem matcher
+      uses: xt0rted/dotnet-format-problem-matcher@v1
 
-    - name: Install NuGet package # Шаг "Install NuGet package" - установка пакета NuGet
-      run: dotnet add Paint2API/Paint2API.csproj package Microsoft.CodeAnalysis.NetAnalyzers --version 8.0.0 # Устанавливаем пакет NuGet Microsoft.CodeAnalysis.NetAnalyzers версии 8.0.0
+    # Install dotnet format as a global tool
+    - name: Install dotnet format
+      run: dotnet tool update --global dotnet-format
 
-    - name: Run Roslyn Style Analyzers # Шаг "Run Roslyn Style Analyzers" - запуск анализаторов Roslyn для проверки стиля кода
-    # Выполняем сборку проекта с указанными параметрами и запускаем анализаторы стиля кода и сборку
-      run: dotnet format style -v detailed --severity info --verify-no-changes
+    # Run dotnet format --dry-run --check
+    # By default, the task ensure the exit code is 0
+    # If a file needs to be edited by dotnet format, the exit code will be a non-zero value
+    # So the task will fail
+    - name: Run dotnet format
+      run: dotnet format --check --verbosity diagnostic
